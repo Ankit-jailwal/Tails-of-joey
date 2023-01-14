@@ -1,6 +1,6 @@
 Folder Structure of TOJ
 ============================
-### A typical top-level directory layout
+### Top-level directory layout
 
     .
     ├── config                      # Application configration files 
