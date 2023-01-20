@@ -23,3 +23,16 @@ export const ManagerLogin = async (req: Request, res: Response, next: NextFuncti
 
     return res.json({"message": "Email or password is incorrect"});
 }
+
+
+const GetManagerProfile = async (req: Request, res: Response, next: NextFunction) => {
+    
+}
+
+const UpdateManagerProfile = async (req: Request, res: Response, next: NextFunction) => {
+    
+}
+
+const UpdateManagerService = async (req: Request, res: Response, next: NextFunction) => {
+    
+}
