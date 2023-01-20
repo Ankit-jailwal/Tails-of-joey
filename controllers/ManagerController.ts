@@ -41,6 +41,16 @@ export const ManagerLogin = async (req: Request, res: Response, next: NextFuncti
 
 export const GetManagerProfile = async (req: Request, res: Response, next: NextFunction) => {
     
+    const user = req.user;
+
+    if(user) {
+
+        const existingManager = await FindManager(user._id)
+
+        return res.json(existingManager)
+    }
+    
+    return res.json({"message": "Manager information not found"})
 }
 
 export const UpdateManagerProfile = async (req: Request, res: Response, next: NextFunction) => {

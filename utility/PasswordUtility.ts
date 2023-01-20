@@ -1,7 +1,9 @@
 import bcrypt from 'bcrypt';
-import { ManagerPayload } from '../dto';
+import { AuthPayload, ManagerPayload } from '../dto';
 import  jwt  from 'jsonwebtoken';
 import { APP_SECRET } from '../config';
+import { Request, Response, NextFunction } from 'express';
+
 
 export const GenerateSalt = async () => {
 
@@ -25,4 +27,21 @@ export const GenerateSignature = async (payload: ManagerPayload) => {
 
     return jwt.sign(payload, APP_SECRET, {expiresIn: "1d"})
 
+}
+
+export const ValidateSignature = async (req: Request) => {
+
+    const signature = req.get('Authorization')
+
+    if(signature) {
+
+        const payload = await jwt.verify(signature.split(' ')[1], APP_SECRET) as AuthPayload
+
+        req.user = payload
+
+        return true;
+    }
+
+
+    return false
 }
