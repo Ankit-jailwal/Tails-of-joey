@@ -43,6 +43,7 @@ export const CreateManager =async (req: Request, res: Response, next: NextFuncti
         serviceAvailable: false,
         coverImages: []
     })
+    
     return res.json(createdManager)
 }
 
