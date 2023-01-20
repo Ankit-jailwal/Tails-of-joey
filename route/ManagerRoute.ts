@@ -1,13 +1,13 @@
 import express, {Request , Response, NextFunction} from "express";
-import { ManagerLogin } from "../controllers";
+import { GetManagerProfile, ManagerLogin, UpdateManagerProfile, UpdateManagerService, } from "../controllers";
 
 
 const router = express.Router();
 
 router.post('/login', ManagerLogin)
-router.get('/profile', )
-router.patch('/profile', )
-router.patch('/service', )
+router.get('/profile', GetManagerProfile)
+router.patch('/profile', UpdateManagerProfile)
+router.patch('/service', UpdateManagerService)
 
 router.get('/', (req: Request, res: Response, next: NextFunction) => {
     res.json({ message: "Hello from Manager"})

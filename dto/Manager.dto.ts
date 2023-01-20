@@ -13,3 +13,9 @@ export interface ManagerLoginInput {
     email: string;
     password: string;
 }
+
+export interface ManagerPayload {
+    _id: string;
+    email: string;
+    name: string;
+}

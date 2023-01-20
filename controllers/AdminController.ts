@@ -43,13 +43,14 @@ export const CreateManager =async (req: Request, res: Response, next: NextFuncti
         serviceAvailable: false,
         coverImages: []
     })
-    
+
     return res.json(createdManager)
 }
 
 export const GetManagers =async (req: Request, res: Response, next: NextFunction) => {
     const managers = await Manager.find()
 
+    console.log(managers)
     if(managers !== null) {
         return res.json(managers)
     }

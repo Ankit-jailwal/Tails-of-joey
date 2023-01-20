@@ -1,20 +1,34 @@
 import { Request, Response, NextFunction } from "express";
 import { ManagerLoginInput } from "../dto";
-import { ValidatePassword } from "../utility";
+import { GenerateSignature, ValidatePassword } from "../utility";
 import { FindManager } from "./AdminController";
 
+
+
+
 export const ManagerLogin = async (req: Request, res: Response, next: NextFunction) => {
+
     const {email, password} = <ManagerLoginInput>req.body;
 
     const existingManager = await FindManager('', email)
 
     if(existingManager !== null) {
+
             // Validation and giving access
 
             const validation = await ValidatePassword(password, existingManager.password, existingManager.salt)
 
             if(validation) {
-                return res.json(existingManager)
+
+                const signature = await GenerateSignature(
+                    {
+                        _id: existingManager._id,
+                        email: existingManager.email,
+                        name: existingManager.name
+                    }
+                )
+
+                return res.json(signature)
             }
             else {
                 return res.json({"message" : "Password is wrong"})
@@ -25,14 +39,14 @@ export const ManagerLogin = async (req: Request, res: Response, next: NextFuncti
 }
 
 
-const GetManagerProfile = async (req: Request, res: Response, next: NextFunction) => {
+export const GetManagerProfile = async (req: Request, res: Response, next: NextFunction) => {
     
 }
 
-const UpdateManagerProfile = async (req: Request, res: Response, next: NextFunction) => {
+export const UpdateManagerProfile = async (req: Request, res: Response, next: NextFunction) => {
     
 }
 
-const UpdateManagerService = async (req: Request, res: Response, next: NextFunction) => {
+export const UpdateManagerService = async (req: Request, res: Response, next: NextFunction) => {
     
 }
