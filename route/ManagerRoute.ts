@@ -1,5 +1,5 @@
 import express, {Request , Response, NextFunction} from "express";
-import { GetManagerProfile, ManagerLogin, UpdateManagerProfile, UpdateManagerService, } from "../controllers";
+import { GetManagerProfile, ManagerLogin, UpdateManagerProfile } from "../controllers";
 import { Authenticate } from "../middlewares";
 
 
@@ -10,7 +10,6 @@ router.post('/login', ManagerLogin)
 router.use(Authenticate)
 router.get('/profile', GetManagerProfile)
 router.patch('/profile', UpdateManagerProfile)
-router.patch('/service', UpdateManagerService)
 
 router.get('/', (req: Request, res: Response, next: NextFunction) => {
     res.json({ message: "Hello from Manager"})

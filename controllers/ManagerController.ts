@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { ManagerLoginInput } from "../dto";
+import { EditManagerInputs, ManagerLoginInput } from "../dto";
 import { GenerateSignature, ValidatePassword } from "../utility";
 import { FindManager } from "./AdminController";
 
@@ -55,8 +55,29 @@ export const GetManagerProfile = async (req: Request, res: Response, next: NextF
 
 export const UpdateManagerProfile = async (req: Request, res: Response, next: NextFunction) => {
     
-}
+    const { productType, name, address, phone, email } = <EditManagerInputs>req.body;
 
-export const UpdateManagerService = async (req: Request, res: Response, next: NextFunction) => {
-    
+    const user = req.user;
+
+    if(user) {
+
+        const existingManager = await FindManager(user._id)
+
+        if(existingManager !== null) {
+
+            existingManager.name = name;
+            existingManager.address = address;
+            existingManager.phone = phone;
+            existingManager.email = email;
+            existingManager.productType = productType;
+
+            const saveResult = await existingManager.save()
+
+            return res.json(saveResult)
+
+        }
+        return res.json(existingManager)
+    }
+
+    return res.json({"message": "Manager information not found"})
 }

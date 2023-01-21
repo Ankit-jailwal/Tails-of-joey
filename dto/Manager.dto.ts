@@ -9,6 +9,13 @@ export interface CreateManagerInput{
     password: string;
 }
 
+export interface EditManagerInputs {
+    email : string;
+    name : string;
+    phone: string;
+    address: string;
+    productType: [string];
+}
 export interface ManagerLoginInput {
     email: string;
     password: string;
