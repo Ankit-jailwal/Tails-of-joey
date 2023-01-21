@@ -1,5 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { EditManagerInputs, ManagerLoginInput } from "../dto";
+import { CreateProductInput } from "../dto/Product.dto";
+import { Product } from "../models";
 import { GenerateSignature, ValidatePassword } from "../utility";
 import { FindManager } from "./AdminController";
 
@@ -80,4 +82,46 @@ export const UpdateManagerProfile = async (req: Request, res: Response, next: Ne
     }
 
     return res.json({"message": "Manager information not found"})
+}
+
+
+export const AddProduct = async (req: Request, res: Response, next: NextFunction) => {
+    
+    const user = req.user;
+
+    if(user) {
+        const { name, description, category, productType, mrp, price, images} = <CreateProductInput>req.body;
+
+        const manager = await FindManager(user._id)
+
+        if(manager !== null) {
+
+            const createProduct = await Product.create({
+                name: name,
+                description: description,
+                category: category,
+                productType: productType,
+                mrp: mrp,
+                price: price,
+                images: images
+            })
+
+            return res.json(createProduct)
+        }
+
+        return res.json({"message": "Manager not found"})
+    }
+    
+    return res.json({"message": "Something went wrong"})
+}
+
+export const GetProducts = async (req: Request, res: Response, next: NextFunction) => {
+    
+    const user = req.user;
+
+    if(user) {
+        
+    }
+    
+    return res.json({"message": "No product found"})
 }
