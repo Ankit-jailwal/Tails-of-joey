@@ -1,5 +1,5 @@
 import express, {Request , Response, NextFunction} from "express";
-import { AddProduct, GetManagerProfile, ManagerLogin, UpdateManagerProfile } from "../controllers";
+import { AddProduct, GetProducts, GetManagerProfile, ManagerLogin, UpdateManagerProfile } from "../controllers";
 import { Authenticate } from "../middlewares";
 
 
@@ -12,7 +12,7 @@ router.get('/profile', GetManagerProfile)
 router.patch('/profile', UpdateManagerProfile)
 
 router.post('/product', AddProduct)
-router.get('/product', )
+router.get('/product', GetProducts)
 
 router.get('/', (req: Request, res: Response, next: NextFunction) => {
     res.json({ message: "Hello from Manager"})

@@ -121,6 +121,12 @@ export const GetProducts = async (req: Request, res: Response, next: NextFunctio
 
     if(user) {
         
+        const Products = await Product.find()
+
+        if(Products !== null) {
+            return res.json(Products)
+        }
+        
     }
     
     return res.json({"message": "No product found"})
