@@ -57,7 +57,7 @@ export const GetManagerProfile = async (req: Request, res: Response, next: NextF
 
 export const UpdateManagerProfile = async (req: Request, res: Response, next: NextFunction) => {
     
-    const { productType, name, address, phone, email } = <EditManagerInputs>req.body;
+    const { name, phone, email } = <EditManagerInputs>req.body;
 
     const user = req.user;
 
@@ -68,17 +68,16 @@ export const UpdateManagerProfile = async (req: Request, res: Response, next: Ne
         if(existingManager !== null) {
 
             existingManager.name = name;
-            existingManager.address = address;
             existingManager.phone = phone;
             existingManager.email = email;
-            existingManager.productType = productType;
 
             const saveResult = await existingManager.save()
 
             return res.json(saveResult)
 
         }
-        return res.json(existingManager)
+
+        return res.json({"message" : "Manager does not exist"})
     }
 
     return res.json({"message": "Manager information not found"})
@@ -106,6 +105,7 @@ export const AddProduct = async (req: Request, res: Response, next: NextFunction
                 images: images
             })
 
+            console.log()
             return res.json(createProduct)
         }
 
@@ -126,7 +126,7 @@ export const GetProducts = async (req: Request, res: Response, next: NextFunctio
         if(Products !== null) {
             return res.json(Products)
         }
-        
+
     }
     
     return res.json({"message": "No product found"})

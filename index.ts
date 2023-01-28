@@ -1,23 +1,16 @@
-import express from "express";
-import bodyParser from "body-parser";
-import mongoose from "mongoose";
-import { AdminRoute, ManagerRoute } from "./route";
-import { MONGO_URI } from "./config";
+import express from 'express';
+import App from './services/ExpressApp';
+import dbConnection from './services/Database';
 
-const app = express();
+const StartServer =async () => {
+    
+    const app = express();
 
-app.use(bodyParser.json())
-app.use(bodyParser.urlencoded({extended: true}))
+    await dbConnection()
+    await App(app)
 
-app.use('/admin', AdminRoute)
-app.use('/manager', ManagerRoute)
+    app.listen(8000, () => {console.log("TOJ running on port 8000")})
 
-mongoose.connect(MONGO_URI).then(result => {
-    // console.log(result)
-    console.log("Connected to DB")
-}).catch(err => console.log("error"+ err))
+}
 
-app.listen(8000, () => {
-    console.clear()
-    console.log("App is listening to the port 8000")
-})
+StartServer()

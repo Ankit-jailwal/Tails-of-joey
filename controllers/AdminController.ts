@@ -15,7 +15,7 @@ export const FindManager = async (id: String | undefined, email?: string) => {
 
 
 export const CreateManager =async (req: Request, res: Response, next: NextFunction) => {
-    const {name, address, pincode, productType, email, password, ownerName, phone} = <CreateManagerInput> req.body;
+    const {name, email, password, phone} = <CreateManagerInput> req.body;
 
     const existManager = await FindManager('', email)
 
@@ -31,17 +31,10 @@ export const CreateManager =async (req: Request, res: Response, next: NextFuncti
 
     const createdManager = await Manager.create({
         name: name,
-        address: address, 
-        pincode: pincode,
-        productType: productType,
         email: email,
         password: userPassword,
         salt: salt,
-        ownerName: ownerName,
         phone: phone,
-        rating: 0,
-        serviceAvailable: false,
-        coverImages: []
     })
 
     return res.json(createdManager)
