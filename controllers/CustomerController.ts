@@ -1,9 +1,10 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express, {  Response, NextFunction, Request } from 'express';
 import { plainToClass } from 'class-transformer';
 import { CreateCustomerInputs } from '../dto/Customer.dto';
 import { validate } from 'class-validator';
 import { GeneratePassword, GenerateSalt } from '../utility';
 import { Customer } from '../models/Customer';
+import { GenerateOtp } from '../utility/NotificationUtility';
 
 
 export const CustomerSignUp =async (req: Request, res: Response, next: NextFunction) => {
@@ -13,17 +14,20 @@ export const CustomerSignUp =async (req: Request, res: Response, next: NextFunct
     const InputErrors = await validate(customerInputs, { validationError: {target : true}});
 
     if(InputErrors.length > 0) {
-        return res.status(400).json;
+        return res.status(400).json("Not working");
     }
-
+    
     const {email, phone, password} = customerInputs;
 
     const salt = await GenerateSalt()
 
     const userPassword = await GeneratePassword(password, salt);
 
-    const otp = 984853;
-    const otp_expiry = new Date()
+    const {otp , expiry} = GenerateOtp();
+  
+    console.log(otp, expiry)
+
+    return res.status(200).json("working")
 
     const result = await Customer.create({
         email: email,
@@ -31,7 +35,7 @@ export const CustomerSignUp =async (req: Request, res: Response, next: NextFunct
         phone: phone,
         salt: salt,
         otp: otp,
-        otp_expiry: otp_expiry,
+        otp_expiry: expiry,
         firstName: '',
         lastName: '',
         address: '',

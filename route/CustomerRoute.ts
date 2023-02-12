@@ -5,7 +5,7 @@ const router = express.Router();
 
 
 // Signup / Create Customer
-router.post('/singup', CustomerSignUp)
+router.post('/signup', CustomerSignUp)
 
 // Login
 router.post('/login', CustomerLogin)
