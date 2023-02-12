@@ -14,3 +14,9 @@ export class CreateCustomerInputs {
     password : string;
 
 }
+
+export interface CustomerPayload {
+    _id: string,
+    email: string,
+    verified: boolean
+}

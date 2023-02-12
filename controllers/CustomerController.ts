@@ -2,9 +2,9 @@ import express, {  Response, NextFunction, Request } from 'express';
 import { plainToClass } from 'class-transformer';
 import { CreateCustomerInputs } from '../dto/Customer.dto';
 import { validate } from 'class-validator';
-import { GeneratePassword, GenerateSalt } from '../utility';
+import { GeneratePassword, GenerateSalt, GenerateSignature } from '../utility';
 import { Customer } from '../models/Customer';
-import { GenerateOtp } from '../utility/NotificationUtility';
+import { GenerateOtp, onRequestOtp } from '../utility/NotificationUtility';
 
 
 export const CustomerSignUp =async (req: Request, res: Response, next: NextFunction) => {
@@ -27,8 +27,6 @@ export const CustomerSignUp =async (req: Request, res: Response, next: NextFunct
   
     console.log(otp, expiry)
 
-    return res.status(200).json("working")
-
     const result = await Customer.create({
         email: email,
         password: userPassword,
@@ -47,11 +45,19 @@ export const CustomerSignUp =async (req: Request, res: Response, next: NextFunct
     if(result) {
         
         // send the OTP to customer
-
+        await onRequestOtp(otp, phone)
         // generate the signature
-
+        const signature = GenerateSignature({
+            _id : result._id,
+            email: result.email,
+            verified: result.verified
+        })
         // send the result to client
+
+        return res.status(201).json({ signature: signature, verified: result.verified, email: result.email})
     }
+
+    return res.status(400).json({"message": "Error with Signup"})
 }
 
 export const CustomerLogin =async (req: Request, res: Response, next: NextFunction) => {
