@@ -25,6 +25,12 @@ export const CustomerSignUp =async (req: Request, res: Response, next: NextFunct
 
     const {otp , expiry} = GenerateOtp();
   
+    const existCustomer = await Customer.findOne({ email : email})
+
+    if(existCustomer !== null) {
+        return res.status(409).json({ message: 'An user with email already exists'})
+    }
+
     console.log(otp, expiry)
 
     const result = await Customer.create({
@@ -42,16 +48,19 @@ export const CustomerSignUp =async (req: Request, res: Response, next: NextFunct
         lng: 0
     }) 
 
+
+
     if(result) {
         
         // send the OTP to customer
         await onRequestOtp(otp, phone)
         // generate the signature
-        const signature = GenerateSignature({
+        const signature = await GenerateSignature({
             _id : result._id,
             email: result.email,
             verified: result.verified
         })
+
         // send the result to client
 
         return res.status(201).json({ signature: signature, verified: result.verified, email: result.email})
@@ -66,6 +75,29 @@ export const CustomerLogin =async (req: Request, res: Response, next: NextFuncti
 
 export const CustomerVerify =async (req: Request, res: Response, next: NextFunction) => {
     
+    const {otp} = req.body
+    const user = req.user
+
+    if(user) {
+        const profile = await Customer.findById(user._id)
+
+        if(profile) {
+            if(profile.otp === parseInt(otp) && profile.otp_expiry >= new Date()) {
+                profile.verified = true;
+                const updatedCustomerResponse = await profile.save()
+
+                const signature = await GenerateSignature({
+                    _id : updatedCustomerResponse._id,
+                    email: updatedCustomerResponse.email,
+                    verified: updatedCustomerResponse.verified
+                })
+
+                return res.status(200).json({ signature: signature, verified: updatedCustomerResponse.verified, email: updatedCustomerResponse.email})
+            }
+        }
+    }
+
+    return res.status(400).json({"message": "Error with OTP validation"})
 }
 
 export const RequestOtp =async (req: Request, res: Response, next: NextFunction) => {
