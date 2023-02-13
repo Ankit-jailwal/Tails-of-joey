@@ -20,12 +20,12 @@ const CustomerSchema = new Schema({
     lastName: {type: String},
     phone: {type: String, required: true},
     email: {type: String, required: true},
-    password: {type: String, required: true},
-    salt: {type: String, required: true},
-    address: {type: String},
-    verified: {type: Boolean, required: true},
     otp: {type: Number, required: true},
+    salt: {type: String, required: true},
+    verified: {type: Boolean, required: true},
     otp_expiry: {type: Date, required: true},
+    password: {type: String},
+    address: {type: String},
     lat: {type: Number},
     lng: {type: Number}
 },   {
