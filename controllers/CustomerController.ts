@@ -248,9 +248,9 @@ export const CreateOrder = async(req: Request, res: Response, next: NextFunction
             if(currentOrder) {
                 // finally update orders to user account
                 profile?.orders.push(currentOrder);
-                const profileResponse = await profile?.save();
+                await profile?.save();
 
-                return res.status(200).json(profileResponse)
+                return res.status(200).json(currentOrder)
             }
         }
         }
@@ -261,9 +261,28 @@ export const CreateOrder = async(req: Request, res: Response, next: NextFunction
     
 
 export const GetOrders = async(req: Request, res: Response, next: NextFunction) => {
+    const customer = req.user;
 
+    if(customer) {
+        const profile = await Customer.findById(customer._id).populate('orders');
+
+        if(profile) {
+            return res.status(200).json(profile.orders);
+        }
+
+        return res.json({message: "You haven't placed any order yet!"})
+    }
+
+    return res.json({message: "User not found"})
 }
 
 export const GetOrderById = async(req: Request, res: Response, next: NextFunction) => {
 
+    const orderID = req.params.id;
+
+    if(orderID) {
+        const order = await Order.findById(orderID).populate('items');
+
+        return res.json(order)
+    }
 }
