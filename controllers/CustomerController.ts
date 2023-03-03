@@ -172,7 +172,7 @@ export const GetCustomerProfile = async (req: Request, res: Response, next: Next
 
 }
 
-export const EditCustomerProfile =async (req: Request, res: Response, next: NextFunction) => {
+export const EditCustomerProfile = async (req: Request, res: Response, next: NextFunction) => {
     const customer = req.user;
 
     const customerInputs = plainToClass(EditCustomerProfileInput, req.body);
@@ -200,4 +200,16 @@ export const EditCustomerProfile =async (req: Request, res: Response, next: Next
 
     }
     return res.status(400).json({ msg: 'Error while Updating Profile'});
+}
+
+export const CreateOrder = async(req: Request, res: Response, next: NextFunction) => {
+
+}
+
+export const GetOrders = async(req: Request, res: Response, next: NextFunction) => {
+
+}
+
+export const GetOrderById = async(req: Request, res: Response, next: NextFunction) => {
+
 }
