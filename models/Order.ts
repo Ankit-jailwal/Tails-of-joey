@@ -34,6 +34,6 @@ const OrderSchema = new Schema({
     }
 })
 
-const Order = mongoose.model<OrderDoc>('order ', OrderSchema)
+const Order = mongoose.model<OrderDoc>('order', OrderSchema)
 
 export { Order }

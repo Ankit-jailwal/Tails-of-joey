@@ -1,5 +1,5 @@
 import mongoose, { Schema, Model, Document } from "mongoose";
-import {OrderDoc} from './Order'
+import { OrderDoc } from '../models'
 interface CustomerDoc extends Document {
   firstName: string;
   lastName: String;

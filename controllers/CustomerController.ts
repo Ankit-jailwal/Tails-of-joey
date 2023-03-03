@@ -224,12 +224,10 @@ export const CreateOrder = async(req: Request, res: Response, next: NextFunction
         // calculate amount
         const products = await Product.find().where('_id').in(cart.map(item => item._id)).exec();
 
-        products.map( product => {
-
+        products.map(product => {
             cart.map(({ _id, unit}) => {
-
-                if(product._id == _id) {
-                    netAmount  += (product.price * unit);
+                if(product._id == _id){
+                    netAmount += (product.price * unit);
                     cartItems.push({ product, unit})
                 }
             })
@@ -261,11 +259,6 @@ export const CreateOrder = async(req: Request, res: Response, next: NextFunction
     
     }
     
-
-    
-
-
-
 
 export const GetOrders = async(req: Request, res: Response, next: NextFunction) => {
 
