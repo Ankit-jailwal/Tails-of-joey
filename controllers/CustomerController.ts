@@ -1,11 +1,12 @@
 import express, {  Response, NextFunction, Request } from 'express';
 import { plainToClass } from 'class-transformer';
-import { CreateCustomerInputs, UserLoginInputs, EditCustomerProfileInput } from '../dto/Customer.dto';
+import { CreateCustomerInputs, UserLoginInputs, EditCustomerProfileInput, OrderInputs } from '../dto/Customer.dto';
 import { validate } from 'class-validator';
 import { GeneratePassword, GenerateSalt, GenerateSignature, ValidatePassword } from '../utility';
 import { Customer } from '../models/Customer';
 import { GenerateOtp, onRequestOtp } from '../utility/NotificationUtility';
-import { preProcessFile } from 'typescript';
+import { Order } from '../models';
+import { Product } from '../models';
 
 
 export const CustomerSignUp =async (req: Request, res: Response, next: NextFunction) => {
@@ -46,7 +47,8 @@ export const CustomerSignUp =async (req: Request, res: Response, next: NextFunct
         address: '',
         verified: false,
         lat: 0,
-        lng: 0
+        lng: 0,
+        orders : []
     }) 
 
 
@@ -203,8 +205,67 @@ export const EditCustomerProfile = async (req: Request, res: Response, next: Nex
 }
 
 export const CreateOrder = async(req: Request, res: Response, next: NextFunction) => {
+    // grab current login user
+    const customer = req.user;
 
-}
+    if(customer) {
+        // create an order ID
+        const orderID = `${Math.floor(Math.random() * 89999) + 1000}`;
+
+        const profile = await Customer.findById(customer._id);
+
+        // grab order items from request
+        const cart = <[OrderInputs]>req.body; 
+
+        let cartItems = Array();
+
+        let netAmount = 0.0;
+
+        // calculate amount
+        const products = await Product.find().where('_id').in(cart.map(item => item._id)).exec();
+
+        products.map( product => {
+
+            cart.map(({ _id, unit}) => {
+
+                if(product._id == _id) {
+                    netAmount  += (product.price * unit);
+                    cartItems.push({ product, unit})
+                }
+            })
+        })
+
+        if(cartItems) {
+        // create order with item descriptions
+            const currentOrder = await Order.create({
+                orderID: orderID,
+                items: cartItems,
+                totalAmount: netAmount,
+                orderDate: new Date(),
+                paidThrough: 'COD',
+                PaymentResponse: '',
+                orderSatus: 'Waiting'
+            })
+
+            if(currentOrder) {
+                // finally update orders to user account
+                profile?.orders.push(currentOrder);
+                const profileResponse = await profile?.save();
+
+                return res.status(200).json(profileResponse)
+            }
+        }
+        }
+        
+        return res.status(400).json({ message: 'Error with create order!'})
+    
+    }
+    
+
+    
+
+
+
 
 export const GetOrders = async(req: Request, res: Response, next: NextFunction) => {
 
