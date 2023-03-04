@@ -9,6 +9,9 @@ import { Order } from '../models';
 import { Product } from '../models';
 
 
+
+//   ----------AUTHENTICATION----------
+
 export const CustomerSignUp =async (req: Request, res: Response, next: NextFunction) => {
     
     const customerInputs = plainToClass(CreateCustomerInputs, req.body);
@@ -156,6 +159,10 @@ export const RequestOtp =async (req: Request, res: Response, next: NextFunction)
     return res.status(400).json({ message: "Error with request OTP"})
 }
 
+
+
+//  ---------PROFILE----------
+
 export const GetCustomerProfile = async (req: Request, res: Response, next: NextFunction) => {
 
     const customer = req.user;
@@ -203,6 +210,11 @@ export const EditCustomerProfile = async (req: Request, res: Response, next: Nex
     }
     return res.status(400).json({ msg: 'Error while Updating Profile'});
 }
+
+
+
+
+//    -------ORDERS--------
 
 export const CreateOrder = async(req: Request, res: Response, next: NextFunction) => {
     // grab current login user
@@ -285,4 +297,22 @@ export const GetOrderById = async(req: Request, res: Response, next: NextFunctio
 
         return res.json(order)
     }
+}
+
+
+
+
+//  --------CART--------
+
+export const AddToCart = async(req: Request, res: Response, next: NextFunction) => {
+
+}
+
+
+export const GetCart = async(req: Request, res: Response, next: NextFunction) => {
+    
+}
+
+export const DeleteCart = async(req: Request, res: Response, next: NextFunction) => {
+    
 }
