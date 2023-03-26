@@ -212,7 +212,86 @@ export const EditCustomerProfile = async (req: Request, res: Response, next: Nex
 }
 
 
+//  --------CART--------
 
+export const AddToCart = async(req: Request, res: Response, next: NextFunction) => {
+    const customer = req.user;
+
+    if(customer) {
+        const profile = await Customer.findById(customer._id).populate('cart.product');
+        let cartItems = Array();
+
+        const {_id, unit} = <OrderInputs>req.body;
+
+        const product = await Product.findById(_id);
+
+        if(product) {
+
+            if(profile != null) {
+                cartItems = profile.cart;
+
+                if(cartItems.length > 0) {
+                    // check and update unit
+                    let existProductItem = cartItems.filter((item) => item.product._id.toString() === _id);
+
+                    if(existProductItem.length > 0) {
+                        const index = cartItems.indexOf(existProductItem[0]);
+                        if(unit > 0) {
+                            cartItems[index] = { product, unit };
+                        } else {
+                            cartItems.splice(index, 1);
+                        }
+                    } else {
+                        cartItems.push({ product , unit});
+                    }
+                } else {
+                    // add new item to the cart
+                    cartItems.push({ product , unit});
+                }
+
+                if(cartItems) {
+                    profile.cart = cartItems as any;
+                    const cartResult = await profile.save();
+
+                    return res.status(200).json({cartResult})
+                }
+            }
+        }
+        
+    } 
+        return res.status(400).json({message: 'Unable to create cart!'})
+}
+
+
+export const GetCart = async(req: Request, res: Response, next: NextFunction) => {
+    const customer = req.user;
+
+    if(customer) {
+        const profile = await Customer.findById(customer._id).populate('cart.product');
+
+        if(profile) {
+            return res.status(200).json(profile.cart)
+        }
+    }
+    return res.status(400).json({message: 'Cart is empty!'})
+
+}
+
+export const DeleteCart = async(req: Request, res: Response, next: NextFunction) => {
+    const customer = req.user;
+
+    if(customer) {
+        const profile = await Customer.findById(customer._id).populate('cart.product');
+
+        if(profile != null) {
+            profile.cart = [] as any;
+            const cartResult = await profile.save();
+
+            return res.status(200).json(cartResult)
+        }
+    }
+    return res.status(400).json({message: 'Cart is already empty!'})
+}
 
 //    -------ORDERS--------
 
@@ -297,22 +376,4 @@ export const GetOrderById = async(req: Request, res: Response, next: NextFunctio
 
         return res.json(order)
     }
-}
-
-
-
-
-//  --------CART--------
-
-export const AddToCart = async(req: Request, res: Response, next: NextFunction) => {
-
-}
-
-
-export const GetCart = async(req: Request, res: Response, next: NextFunction) => {
-    
-}
-
-export const DeleteCart = async(req: Request, res: Response, next: NextFunction) => {
-    
 }
