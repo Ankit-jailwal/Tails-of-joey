@@ -1,5 +1,5 @@
 import express, {Request , Response, NextFunction} from "express";
-import { AddProduct, GetProducts, GetManagerProfile, ManagerLogin, UpdateManagerProfile } from "../controllers";
+import { AddProduct, GetProducts, GetManagerProfile, ManagerLogin, UpdateManagerProfile, GetOrders, GetOrderDetails, ProcessOrder } from "../controllers";
 import { Authenticate } from "../middlewares";
 
 
@@ -15,9 +15,9 @@ router.post('/product', AddProduct)
 router.get('/product', GetProducts)
 
 // Orders 
-router.get('/orders');
-router.put('/order/:id/process');
-router.get('/order/:id')
+router.get('/orders', GetOrders);
+router.put('/order/:id/process', ProcessOrder);
+router.get('/order/:id', GetOrderDetails)
 
 
 

@@ -8,6 +8,11 @@ export interface OrderDoc extends Document {
     paidThrough: string,
     paymentStatus: string,
     orderStatus: string,
+    remarks: string,
+    deliveryId: string,
+    appliedOffers: boolean,
+    offerId: string,
+    readyTime: number
 }
 
 const OrderSchema = new Schema({
@@ -23,6 +28,8 @@ const OrderSchema = new Schema({
     paidThrough: {type: String },
     paymentStatus: {type: String },
     orderStatus: {type: String },
+    remarks: {type: String},
+    readyTime: {type: Number}
 }, {
     toJSON: {
         transform(doc, ret) {
