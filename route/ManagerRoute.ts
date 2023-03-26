@@ -14,6 +14,13 @@ router.patch('/profile', UpdateManagerProfile)
 router.post('/product', AddProduct)
 router.get('/product', GetProducts)
 
+// Orders 
+router.get('/orders');
+router.put('/order/:id/process');
+router.get('/order/:id')
+
+
+
 router.get('/', (req: Request, res: Response, next: NextFunction) => {
     res.json({ message: "Hello from Manager"})
 })
