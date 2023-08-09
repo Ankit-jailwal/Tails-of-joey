@@ -6,10 +6,10 @@ const StartServer =async () => {
     
     const app = express();
 
-    await dbConnection()
+    // await dbConnection()
     await App(app)
-
-    app.listen(8000, () => {console.log("TOJ running on port 8000")})
+    const port = process.env.PORT || 8081
+    app.listen(port, () => {console.log("TOJ running on port $port")})
 
 }
 
